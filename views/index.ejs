@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/css/style.css' />
+
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col s12">
+        <form  method="get" class="jogada">
+          <div class="col s3">
+            <label>
+              <input class="opc" name="opc" type="radio" value="pedra" />
+              <span>Pedra</span>
+            </label>
+          </div>
+          <div class="col s3">
+            <label>
+              <input class="opc" name="opc" type="radio" value="tesoura" />
+              <span>Tesoura</span>
+            </label>
+          </div>
+          <div class="col s3">
+            <label>
+              <input class="opc" name="opc" type="radio" value="papel" />
+              <span>Papel</span>
+            </label>
+          </div>
+          
+          <div class="col s3">
+            <input id="btn" type="submit" value="Enviar">
+          </div>
+
+      </form>
+      <div class="row">
+        <div class="col s6">
+          <div class="card green center">
+            <div class="card-content">
+              <p>Vitorias</p>
+              <span id="vitorias">0</span>
+            </div>            
+          </div>          
+        </div>
+        <div class="col s6">
+          <div class="card yellow center">
+            <div class="card-content">
+              <p>Jogadas</p>
+              <span id="jogadas">0</span>
+            </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="/js/socket.io.js"></script>
+  <script>
+    var socket = io();
+
+    var opc = ""
+    var marcados = ""
+    //console.log('html:>'+vitoria);
+    var cont = 0;
+    var vitoria = 0
+    $('.jogada').on('submit', (e)=>{
+      e.preventDefault();
+      opc = $('input[name=opc]:checked', '.jogada').val();
+      console.log('enviei: '+opc)
+      socket.emit('opc',opc);
+      $('#jogadas').text(cont++)
+
+      socket.on('marcado',(marcado)=>{
+        marcados = marcado;
+      })
+      //bloco pedra
+      if(opc == 'pedra' && marcados == 'pedra'){
+        console.log('empate');
+      }else{
+        if(opc == 'pedra' && marcados == 'papel'){
+          console.log('derrota');
+        }else{
+          if(opc == 'pedra' && marcados == 'tesoura'){
+            //console.log(cont);
+            console.log('vitoria pt'+cont)
+            $('#vitorias').text(++vitoria)
+          }
+        }
+      }
+
+      // bloco papel
+      if(opc == 'papel' && marcados == 'papel'){
+        console.log('empate');
+      }else{
+        if(opc == 'papel' && marcados == 'pedra'){
+          console.log('vitoria pp');
+          $('#vitorias').text(++vitoria)
+        }else{
+          if(opc == 'papel' && marcados == 'tesoura'){
+            console.log('derrota')
+          }
+        }
+      }
+
+      //bloco tesoura
+      if(opc == 'tesoura' && marcados == 'tesoura'){
+        console.log('empate');
+      }else{
+        if(opc == 'tesoura' && marcados == 'pedra'){
+          console.log('derrota');
+        }else{
+          if(opc == 'tesoura' && marcados == 'papel'){
+            console.log('vitoria ts')
+            $('#vitorias').text(++vitoria)
+          }
+        }
+      }
+      //console.log(vitoria);
+      /*$(document).ready(function() {
+        $('#vitorias').on('change', function() {
+          $('#valor b').text('R$ '+value);
+        });
+      });*/
+    })
+  </script>
+</body>
+
+</html>
