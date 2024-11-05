@@ -3,11 +3,11 @@
 ## Run the project:
 
 > [!IMPORTANT]
-> `install node 20.15^`
+> `install node 22.11^`
 
 ### Run the installation of dependencies:
 
-`npm installation`
+`npm install`
 
 ### Run the project:
 
